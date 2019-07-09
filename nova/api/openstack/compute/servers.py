@@ -791,6 +791,28 @@ class ServersController(wsgi.Controller):
         else:
             self.compute_api.delete(context, instance)
 
+    @wsgi.response(202)
+    @wsgi.expected_errors(404)
+    def reserve_cpus(self, req, body):
+        """Updates the pinned cpus that servers should not use.
+           availability_zone should be az:host:node e.g. nova:ubuntu:ubuntu
+        """
+        context = req.environ['nova.context']
+        context.can(server_policies.SERVERS % 'detail')
+        cpus = body['cpus']
+        availability_zone = body['availability_zone']
+        parse_az = self.compute_api.parse_availability_zone
+
+        try:
+            availability_zone, host, node = parse_az(context,
+                                                     availability_zone)
+
+            return self.compute_api.reserve_cpus(context, cpus, availability_zone=availability_zone,
+                forced_host=host, forced_node=node)
+        except exception.Invalid as err:
+            raise exc.HTTPBadRequest(explanation=err.format_message())
+
+
     @wsgi.expected_errors(404)
     @validation.schema(schema_servers.base_update_v20, '2.0', '2.0')
     @validation.schema(schema_servers.base_update, '2.1', '2.18')

@@ -43,6 +43,16 @@ rules = [
             }
         ]),
     policy.DocumentedRuleDefault(
+        SERVERS % 'reserve_cpus',
+        RULE_AOO,
+        "Reserve cpus",
+        [
+            {
+                'method': 'POST',
+                'path': '/servers/reserve_cpus'
+            }
+        ]),
+    policy.DocumentedRuleDefault(
         SERVERS % 'index:get_all_tenants',
         base.RULE_ADMIN_API,
         "List all servers for all projects",

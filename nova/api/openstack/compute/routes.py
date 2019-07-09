@@ -741,6 +741,9 @@ ROUTE_LIST = (
     ('/servers/detail', {
         'GET': [server_controller, 'detail']
     }),
+    ('/servers/reserve_cpus', {
+        'POST': [server_controller, 'reserve_cpus']
+    }),
     ('/servers/{id}', {
         'GET': [server_controller, 'show'],
         'PUT': [server_controller, 'update'],

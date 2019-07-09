@@ -1289,6 +1289,10 @@ class ComputeTaskManager(base.Base):
                 with obj_target_cell(inst, cell0):
                     inst.destroy()
 
+    def reserve_cpus(self, context, availability_zone, forced_host, forced_node):
+        #TODO should you change context?
+        self.compute_rpcapi.reserve_cpus(context, cpus, availability_zone, forced_host, forced_node)
+
     def schedule_and_build_instances(self, context, build_requests,
                                      request_specs, image,
                                      admin_password, injected_files,
@@ -1459,6 +1463,10 @@ class ComputeTaskManager(base.Base):
             # pass the objects.
             legacy_secgroups = [s.identifier
                                 for s in request_spec.security_groups]
+
+            LOG.info("--------------------------------------------")
+            LOG.info(host.service_host)
+            LOG.info(host.nodename)
             with obj_target_cell(instance, cell) as cctxt:
                 self.compute_rpcapi.build_and_run_instance(
                     cctxt, instance=instance, image=image,

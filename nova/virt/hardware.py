@@ -1852,6 +1852,21 @@ def _numa_pagesize_usage_from_cell(hostcell, instancecell, sign):
             topo.append(pages)
     return topo
 
+def _reserve_cpus(host, cpus):
+    if host is None:
+        return
+
+    cells = []
+    for hostcell in host.cells:
+        newcell = objects.NUMACell(
+            id=hostcell.id, cpuset=hostcell.cpuset, memory=hostcell.memory,
+            cpu_usage=0, memory_usage=0, mempages=hostcell.mempages,
+            pinned_cpus=hostcell.pinned_cpus, siblings=hostcell.siblings)
+
+        newcell.pin_cpus(cpus)
+        cells.append(newcell)
+
+    return objects.NUMATopology(cells=cells)
 
 def numa_usage_from_instances(host, instances, free=False):
     """Get host topology usage.
@@ -2071,6 +2086,19 @@ def get_host_numa_usage_from_instance(host, instance, free=False,
     updated_numa_topology = (
         numa_usage_from_instances(
             host_numa_topology, instance_numa_topology, free=free))
+
+    if updated_numa_topology is not None:
+        if jsonify_result and not never_serialize_result:
+            updated_numa_topology = updated_numa_topology._to_json()
+
+    return updated_numa_topology
+
+def reserve_cpus(host, cpus):
+    host_numa_topology, jsonify_result = host_topology_and_format_from_host(
+            host)
+
+    updated_numa_topology = (
+        _reserve_cpus(host_numa_topology, cpus))
 
     if updated_numa_topology is not None:
         if jsonify_result and not never_serialize_result:

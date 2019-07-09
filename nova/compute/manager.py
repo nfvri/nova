@@ -8135,6 +8135,17 @@ class ComputeManager(manager.Manager):
                   instance=instance)
         return node
 
+    def reserve_cpus(self, ctxt, cpus, availability_zone, forced_host, forced_node):
+        try:
+            self.rt.reserve_cpus(forced_node,cpus)
+        except exception.ComputeHostNotFound:
+            LOG.warning("Compute node '%s' not found in "
+                        "update_available_resource.", forced_node)
+        except Exception:
+            LOG.exception("Error reserving cpus for node %(node)s.",
+                          {'node': forced_node})
+
+
     def _update_available_resource_for_node(self, context, nodename,
                                             startup=False):
 

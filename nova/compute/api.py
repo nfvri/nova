@@ -1791,6 +1791,24 @@ class API(base.Base):
                         "is specified.")
                 raise exception.InvalidFixedIpAndMaxCountRequest(reason=msg)
 
+
+    def reserve_cpus(self, context, cpus,
+               availability_zone=None, forced_host=None, forced_node=None,
+               ):
+
+        if availability_zone:
+            available_zones = availability_zones.\
+                get_availability_zones(context.elevated(), self.host_api,
+                                       get_only_available=True)
+            if forced_host is None and availability_zone not in \
+                    available_zones:
+                msg = _('The requested availability zone is not available')
+                raise exception.InvalidRequest(msg)
+
+        return self.compute_task_api.reserve_cpus(
+            context, cpus, availability_zone, forced_host, forced_node)
+
+
     @hooks.add_hook("create_instance")
     def create(self, context, instance_type,
                image_href, kernel_id=None, ramdisk_id=None,

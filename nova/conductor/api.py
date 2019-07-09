@@ -133,6 +133,10 @@ class ComputeTaskAPI(object):
             admin_password, injected_files, requested_networks,
             block_device_mapping, tags)
 
+    def reserve_cpus(self, context, cpus, availability_zone, forced_host, forced_node):
+        self.conductor_compute_rpcapi.reserve_cpus(
+            context, cpus, availability_zone, forced_host, forced_node)
+
     def unshelve_instance(self, context, instance, request_spec=None):
         self.conductor_compute_rpcapi.unshelve_instance(context,
                 instance=instance, request_spec=request_spec)

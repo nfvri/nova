@@ -1099,6 +1099,17 @@ class ComputeAPI(object):
         cctxt = client.prepare(server=host, version=version)
         cctxt.cast(ctxt, 'build_and_run_instance', **kwargs)
 
+    def reserve_cpus(self, ctxt, cpus, availability_zone, forced_host, forced_node):
+        kwargs = {"cpus": cpus,
+                  "availability_zone": availability_zone,
+                  "forced_host": forced_host,
+                  "forced_node": forced_node,
+                 }
+        client = self.router.client(ctxt)
+        version = '5.0'
+        cctxt = client.prepare(server=forced_host, version=version)
+        cctxt.cast(ctxt, 'reserve_cpus', **kwargs)
+
     def quiesce_instance(self, ctxt, instance):
         version = '5.0'
         cctxt = self.router.client(ctxt).prepare(

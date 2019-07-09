@@ -1087,6 +1087,18 @@ class ResourceTracker(object):
                 cn, usage, free)
         cn.numa_topology = updated_numa_topology
 
+    def reserve_cpus(self, nodename, cpus):
+        LOG.debug("Reserving specific cpus for "
+                  "%(host)s (node: %(node)s)",
+                 {'node': nodename,
+                  'host': self.host})
+
+        cn = self.compute_nodes[nodename]
+
+        updated_numa_topology = hardware.reserve_cpus(
+                cn, cpus)
+        cn.numa_topology = updated_numa_topology
+
     def _get_migration_context_resource(self, resource, instance,
                                         prefix='new_'):
         migration_context = instance.migration_context

@@ -400,6 +400,19 @@ class ComputeTaskAPI(object):
         cctxt = self.client.prepare(version=version)
         cctxt.cast(context, 'schedule_and_build_instances', **kw)
 
+    def reserve_cpus(self, context, cpus, availability_zone, forced_host, forced_node):
+        version = '1.17'
+        kw = {'cpus': cpus,
+              'availability_zone': availability_zone,
+              'forced_host': forced_host,
+              'forced_node': forced_node}
+
+        if not self.client.can_send_version(version):
+            version = '1.16'
+
+        cctxt = self.client.prepare(version=version)
+        cctxt.cast(context, 'reserve_cpus', **kw)
+
     def unshelve_instance(self, context, instance, request_spec=None):
         version = '1.14'
         kw = {'instance': instance,
