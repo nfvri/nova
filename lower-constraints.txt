@@ -22,7 +22,7 @@ decorator==3.4.0
 deprecation==2.0
 dogpile.cache==0.6.5
 enum34==1.0.4
-enum-compat==0.0.2
+enum-compat==0.0.3
 eventlet==0.20.0
 extras==1.0.0
 fasteners==0.14.1
